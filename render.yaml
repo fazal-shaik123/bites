@@ -18,4 +18,4 @@ services:
       - key: ADMIN_NAME
         value: Fazal
       - key: ADMIN_PIN
-        value: "0602"
+        sync: false
