@@ -40,12 +40,20 @@ app.get('/api/health', (req, res) => {
 });
 
 // Production: serve static client files if built
-const clientDistPath = path.resolve(__dirname, '../../client/dist');
-if (fs.existsSync(clientDistPath)) {
+const possibleClientPaths = [
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(process.cwd(), '../client/dist'),
+  path.resolve(process.cwd(), 'client/dist'),
+];
+const clientDistPath = possibleClientPaths.find((p) => fs.existsSync(p));
+if (clientDistPath) {
+  console.log(`📦 Serving frontend client from: ${clientDistPath}`);
   app.use(express.static(clientDistPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
+} else {
+  console.warn('⚠️ Frontend build (client/dist) not found in expected paths:', possibleClientPaths);
 }
 
 // Global error handler
