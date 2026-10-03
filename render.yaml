@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: bites-app
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm run install:all && npm run build && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_TIMEZONE
+        value: America/New_York
+      - key: HER_NAME
+        value: Sonu
+      - key: ADMIN_NAME
+        value: Fazal
+      - key: ADMIN_PIN
+        value: "0602"
