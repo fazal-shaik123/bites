@@ -13,7 +13,7 @@
     "start": "cd server && npm start",
     "seed": "cd server && npm run seed",
     "test": "cd server && npm test",
-    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+    "install:all": "npm install --include=dev && cd server && npm install --include=dev && cd ../client && npm install --include=dev"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
