@@ -3,17 +3,25 @@
   "version": "1.0.0",
   "private": true,
   "description": "Bites - A warm, private meal-tracking and photo-reveal game",
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev": "concurrently -n \"server,client\" -c \"cyan,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
-    "build": "npm run build:server && npm run build:client",
+    "build": "npm run install:all && npm run build:server && npm run build:client",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
     "start": "cd server && npm start",
     "seed": "cd server && npm run seed",
     "test": "cd server && npm test",
     "install:all": "npm install --include=dev && cd server && npm install --include=dev && cd ../client && npm install --include=dev"
+  },
+  "dependencies": {
+    "typescript": "^5.7.3",
+    "@types/node": "^22.13.4"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
