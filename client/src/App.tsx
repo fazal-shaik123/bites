@@ -16,20 +16,26 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'admi
 }) => {
   const { user, loading, instantLogin } = useAuth();
   const [autoLoggingIn, setAutoLoggingIn] = React.useState(false);
+  const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
-    if (!loading && !user && requiredRole !== 'admin' && !autoLoggingIn) {
+    if (!loading && !user && requiredRole !== 'admin' && !autoLoggingIn && !failed) {
       setAutoLoggingIn(true);
-      instantLogin('her').finally(() => {
-        setAutoLoggingIn(false);
-      });
+      instantLogin('her')
+        .catch(() => {
+          setFailed(true);
+        })
+        .finally(() => {
+          setAutoLoggingIn(false);
+        });
     }
-  }, [loading, user, requiredRole, autoLoggingIn, instantLogin]);
+  }, [loading, user, requiredRole, autoLoggingIn, failed, instantLogin]);
 
   if (loading || autoLoggingIn) {
     return (
-      <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center text-rose-400">
-        <div className="animate-spin text-3xl">🍓</div>
+      <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex flex-col items-center justify-center text-rose-500 gap-3">
+        <div className="animate-spin text-4xl">🍓</div>
+        <p className="text-xs text-stone-500 font-medium">Opening your cozy space...</p>
       </div>
     );
   }
@@ -39,8 +45,26 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'admi
       return <Navigate to="/login" replace />;
     }
     return (
-      <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center text-rose-400">
-        <div className="animate-spin text-3xl">🍓</div>
+      <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex flex-col items-center justify-center p-6 text-center">
+        <div className="text-4xl mb-3">🍓</div>
+        <h2 className="text-base font-bold text-stone-700 dark:text-stone-200 mb-1">
+          Waking up Bites server...
+        </h2>
+        <p className="text-xs text-stone-500 dark:text-stone-400 mb-5 max-w-xs">
+          The server is warming up. Tap below to enter! ✨
+        </p>
+        <button
+          onClick={() => {
+            setFailed(false);
+            setAutoLoggingIn(true);
+            instantLogin('her')
+              .catch(() => setFailed(true))
+              .finally(() => setAutoLoggingIn(false));
+          }}
+          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-bold text-sm shadow-soft hover:shadow-glow transition-all active:scale-95 cursor-pointer"
+        >
+          Enter Bites 🌸
+        </button>
       </div>
     );
   }
