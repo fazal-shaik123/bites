@@ -23,10 +23,10 @@ export const config = {
   timezone: process.env.APP_TIMEZONE || 'America/New_York',
   
   // Seed configurations
-  herName: process.env.HER_NAME || 'Sweetheart',
+  herName: process.env.HER_NAME || 'Sonu',
   herPin: process.env.HER_PIN || '1234',
   adminName: process.env.ADMIN_NAME || 'Fazal',
-  adminPin: process.env.ADMIN_PIN || '4321',
+  adminPin: process.env.ADMIN_PIN || '0602',
 
   // Push notifications
   vapidPublicKey: process.env.VAPID_PUBLIC_KEY || '',

@@ -14,9 +14,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'admi
   children,
   requiredRole
 }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, instantLogin } = useAuth();
+  const [autoLoggingIn, setAutoLoggingIn] = React.useState(false);
 
-  if (loading) {
+  React.useEffect(() => {
+    if (!loading && !user && requiredRole !== 'admin' && !autoLoggingIn) {
+      setAutoLoggingIn(true);
+      instantLogin('her').finally(() => {
+        setAutoLoggingIn(false);
+      });
+    }
+  }, [loading, user, requiredRole, autoLoggingIn, instantLogin]);
+
+  if (loading || autoLoggingIn) {
     return (
       <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center text-rose-400">
         <div className="animate-spin text-3xl">🍓</div>
@@ -25,11 +35,20 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'admi
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    if (requiredRole === 'admin') {
+      return <Navigate to="/login" replace />;
+    }
+    return (
+      <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center text-rose-400">
+        <div className="animate-spin text-3xl">🍓</div>
+      </div>
+    );
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/login" replace />;
+    if (requiredRole === 'admin') {
+      return <Navigate to="/login" replace />;
+    }
   }
 
   return <>{children}</>;

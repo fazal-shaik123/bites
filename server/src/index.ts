@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { config } from './config.js';
 import { initDatabase } from './db/index.js';
+import { seed } from './db/seed.js';
 import { authRouter } from './routes/auth.js';
 import { mealsRouter } from './routes/meals.js';
 import { puzzlesRouter } from './routes/puzzles.js';
@@ -14,8 +15,9 @@ import { notesRouter } from './routes/notes.js';
 
 const app = express();
 
-// Initialize SQLite schema
+// Initialize SQLite schema and guarantee seed data
 initDatabase();
+seed().catch((err) => console.error('Auto-seed error:', err));
 
 // Middleware
 app.use(cors({

@@ -6,6 +6,7 @@ import { config } from '../config.js';
 import { JWTPayload, User } from '../types.js';
 import { pinRateLimiter, recordFailedAttempt, clearFailedAttempts } from '../middleware/rateLimit.js';
 import { verifyToken } from '../middleware/auth.js';
+import { seed } from '../db/seed.js';
 
 export const authRouter = Router();
 
@@ -19,9 +20,13 @@ authRouter.get('/disguise-check', (req: Request, res: Response) => {
 });
 
 // Instant direct login without password/PIN requirement
-authRouter.post('/instant-login', (req: Request, res: Response) => {
+authRouter.post('/instant-login', async (req: Request, res: Response) => {
   const role = req.body?.role || 'her';
-  const user = db.prepare('SELECT * FROM users WHERE role = ?').get(role) as User | undefined;
+  let user = db.prepare('SELECT * FROM users WHERE role = ?').get(role) as User | undefined;
+  if (!user) {
+    await seed();
+    user = db.prepare('SELECT * FROM users WHERE role = ?').get(role) as User | undefined;
+  }
   if (!user) {
     return res.status(404).json({ error: 'User not found.' });
   }
@@ -64,7 +69,11 @@ authRouter.post('/login', pinRateLimiter, async (req: Request, res: Response) =>
     return res.status(400).json({ error: 'Please choose an account and enter a 4-digit PIN.' });
   }
 
-  const user = db.prepare('SELECT * FROM users WHERE role = ?').get(role) as User | undefined;
+  let user = db.prepare('SELECT * FROM users WHERE role = ?').get(role) as User | undefined;
+  if (!user) {
+    await seed();
+    user = db.prepare('SELECT * FROM users WHERE role = ?').get(role) as User | undefined;
+  }
   if (!user) {
     recordFailedAttempt(req);
     return res.status(401).json({ error: 'Invalid credentials.' });
