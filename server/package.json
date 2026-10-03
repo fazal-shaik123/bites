@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "tsx src/db/seed.ts",
-    "test": "DB_PATH=test.sqlite tsx src/tests/unlockRule.test.ts"
+    "test": "DB_PATH=test.sqlite tsx tests/unlockRule.test.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

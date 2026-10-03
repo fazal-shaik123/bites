@@ -1,11 +1,11 @@
 import assert from 'assert';
 import Database from 'better-sqlite3';
-import { attemptTileUnlockForMeal, getActivePuzzle } from '../services/puzzleService.js';
-import { sliceAndCreateTiles } from '../services/imageService.js';
+import { attemptTileUnlockForMeal, getActivePuzzle } from '../src/services/puzzleService.js';
+import { sliceAndCreateTiles } from '../src/services/imageService.js';
 import sharp from 'sharp';
 import path from 'path';
-import { config } from '../config.js';
-import { db, initDatabase } from '../db/index.js';
+import { config } from '../src/config.js';
+import { db, initDatabase } from '../src/db/index.js';
 
 async function runUnlockRuleTests() {
   console.log('🧪 Starting Unlock Rule Test Suite...\n');
