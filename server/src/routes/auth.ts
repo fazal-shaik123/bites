@@ -42,7 +42,7 @@ authRouter.post('/instant-login', async (req: Request, res: Response) => {
   res.cookie('bites_token', token, {
     httpOnly: true,
     secure: config.nodeEnv === 'production',
-    sameSite: 'lax',
+    sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
     maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
   });
 
@@ -100,7 +100,7 @@ authRouter.post('/login', pinRateLimiter, async (req: Request, res: Response) =>
   res.cookie('bites_token', token, {
     httpOnly: true,
     secure: config.nodeEnv === 'production',
-    sameSite: 'lax',
+    sameSite: config.nodeEnv === 'production' ? 'none' : 'lax',
     maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
   });
 
@@ -115,7 +115,7 @@ authRouter.post('/logout', (req: Request, res: Response) => {
   res.clearCookie('bites_token', {
     httpOnly: true,
     secure: config.nodeEnv === 'production',
-    sameSite: 'lax'
+    sameSite: config.nodeEnv === 'production' ? 'none' : 'lax'
   });
   return res.json({ message: 'Logged out successfully.' });
 });

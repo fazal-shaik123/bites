@@ -1,3 +1,11 @@
+const API_BASE = ((import.meta as any).env?.VITE_API_URL || '').replace(/\/$/, '');
+
+export function getApiUrl(path: string): string {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return `${API_BASE}${path.startsWith('/') ? path : '/' + path}`;
+}
+
 export async function apiRequest<T = any>(
   endpoint: string,
   options: RequestInit = {}
@@ -8,7 +16,9 @@ export async function apiRequest<T = any>(
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(endpoint, {
+  const url = getApiUrl(endpoint);
+
+  const response = await fetch(url, {
     ...options,
     headers,
     credentials: 'include' // Send httpOnly JWT cookie
